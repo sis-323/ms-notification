@@ -9,15 +9,19 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/email")
-class EmailApi constructor(
+class EmailApi(
         @Autowired private val emailBl: EmailBl
 ){
+    companion object{
+        private val logger = org.slf4j.LoggerFactory.getLogger(EmailApi::class.java)
+    }
 
     @PostMapping("/")
-    fun sendEmail(@RequestParam to: String,
-                    @RequestParam subject: String,
-                    @RequestParam body: String) : String{
-            emailBl.sendEmail(to, subject, body)
-            return "Email sent"
+    fun sendEmail(@RequestParam("userKc") userKcId: String,
+                @RequestParam("type") type: String){
+        logger.info("Sending email to $userKcId")
+        emailBl.sendEmail(type, userKcId)
     }
+
 }
+
