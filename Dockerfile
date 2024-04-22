@@ -16,7 +16,7 @@ COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
-ENV DB_URL "jdbc:postgresql://localhost:5432/sis-323"
+ENV DB_URL "jdbc:postgresql://localhost:5431/sis-323"
 ENV DB_USER "postgres"
 ENV DB_PASSWORD "admin"
 
