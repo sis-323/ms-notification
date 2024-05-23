@@ -1,23 +1,13 @@
-FROM eclipse-temurin:17-jdk-alpine as build
-WORKDIR /workspace/app
-
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
-COPY src src
-
-RUN ./mvnw install -DskipTests
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
-
 FROM eclipse-temurin:17-jdk-alpine
 VOLUME /tmp
-ARG DEPENDENCY=/workspace/app/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
+ARG DEPENDENCY=target/dependency
+COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY ${DEPENDENCY}/META-INF /app/META-INF
+COPY ${DEPENDENCY}/BOOT-INF/classes /app
 
-ENV DB_URL "jdbc:postgresql://localhost:5431/sis-323"
-ENV DB_USER "postgres"
-ENV DB_PASSWORD "admin"
+ENV POSTGRES_URL "jdbc:postgresql://localhost:5431/sis-323"
+ENV POSTGRES_USER "postgres"
+ENV POSTGRES_PASSWORD "admin"
+ENV DISCOVERY_SERVER_URL "http://localhost:8761/eureka/"
 
 ENTRYPOINT ["java","-cp","app:app/lib/*","com.notification.msnotification.MsNotificationApplicationKt"]
